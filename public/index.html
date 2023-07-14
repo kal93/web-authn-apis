@@ -17,6 +17,13 @@
     <link rel="icon" href="images/icons/icon.png">
 
     <script src="scripts/app.js" type="module"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://unpkg.com/@simplewebauthn/browser/dist/bundle/index.umd.min.js"></script>
+    <script>
+    function loginFromGoogle(data) {
+    Auth.loginFromGoogle(data)
+    }
+    </script>
 
 </head>
 
@@ -53,7 +60,7 @@
 
         <section class="page"  id="register">
             <h2>Register</h2>
-            <form id="formRegister">
+            <form id="formRegister" onsubmit="Auth.register(event)">
                 <fieldset>
                     <input placeholder="You Name" id="register_name"
                             required>
@@ -72,21 +79,49 @@
         <section class="page" id="login">
             <h2>Log In</h2>
 
-            <form id="formLogin">
+            <form id="formLogin" onsubmit="Auth.login(event)">
                 <fieldset>
                     <input placeholder="email" id="login_email"
                         required>      
+                        <section hidden id="login_section_password" >
                     <label for="login_password">Password</label>
                     <input type="password" id="login_password"
                        >
+                    </section>
+                    <section hidden id="login_section_webauthn">
+                            <a href="#" class="navlink" onclick="Auth.webAuthnLogin();event.preventDefault()">
+                                Login with WebAuthn/PassKey
+                            </a>
+                    </section>
                 </fieldset>
                 <button>Continue</button>
 
                 <p>
                     <a href="/register" class="navlink">Register a new account instead</a> 
                 </p>                   
-                
+                <fieldset>
+                    <div id="g_id_onload"
+            data-client_id="846364138974-7ua84o34o9tgnhe4k9la6espfmprp0sl.apps.googleusercontent.com"
+            data-context="signin"
+            data-ux_mode="popup"
+            data-callback="loginFromGoogle"
+            data-auto_select="false"
+            data-itp_support="false">
+            </div>
+
+            <div class="g_id_signin"
+            data-type="standard"
+            data-shape="pill"
+            data-theme="filled_black"
+            data-text="signin_with"
+            data-size="large"
+            data-locale="en-US"
+            data-logo_alignment="left">
+            </div>
                 </fieldset>
+                </fieldset>
+
+                
             </form>            
         </section>
 
@@ -99,7 +134,7 @@
                 <dt>Email</dt>
                 <dd class="account_username"></dd>
             </dl>
-
+                <button onclick="Auth.addWebAuthn()"> Add Authenticator/Passkey</button>
             <button onclick="Auth.logout()">Log out</button>
         </section>
     </main>
